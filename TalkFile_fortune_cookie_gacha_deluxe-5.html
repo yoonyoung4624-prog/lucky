@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>포춘쿠키 가챠</title>
+<style>
+body{
+margin:0;min-height:100vh;display:flex;justify-content:center;align-items:center;
+font-family:sans-serif;
+background:linear-gradient(135deg,#fff7e0,#ffe9b3);
+overflow:hidden;
+}
+.card{
+width:min(90%,550px);
+background:white;
+border-radius:30px;
+padding:35px;
+text-align:center;
+box-shadow:0 12px 35px rgba(0,0,0,.15);
+}
+.slot{
+font-size:2rem;
+font-weight:bold;
+height:60px;
+display:flex;
+justify-content:center;
+align-items:center;
+}
+.hidden{display:none;}
+.rarity{font-size:1.8rem;font-weight:bold;margin:10px 0;}
+.fortune{font-size:1.3rem;line-height:1.7;margin:20px 0;}
+.legendary{
+background:linear-gradient(135deg,#fff8c4,#ffd54f);
+animation:glow 1s infinite alternate;
+}
+@keyframes glow{
+from{box-shadow:0 0 20px gold;}
+to{box-shadow:0 0 45px gold;}
+}
+.confetti{
+position:fixed;
+font-size:24px;
+animation:fall 3s linear forwards;
+}
+@keyframes fall{
+from{transform:translateY(-100px) rotate(0deg);}
+to{transform:translateY(110vh) rotate(720deg);}
+}
+</style>
+</head>
+<body>
+<div class="card" id="card">
+<h2>🥠 포춘쿠키 가챠 🥠</h2>
+<div class="slot" id="slot">🎰 두구두구두구...</div>
+
+<div id="result" class="hidden">
+<div id="rarity" class="rarity"></div>
+<div id="fortune" class="fortune"></div>
+</div>
+</div>
+
+<script>
+const data={
+common:["오늘의 운세: 일단 살아남음.","급식 줄이 생각보다 짧을 수도 있습니다.","당신의 미래를 봤습니다. 배고파할 예정입니다."],
+rare:["⭐ 레어! 생각보다 운이 괜찮은 날.","⭐ 레어! 원하는 걸 발견할 가능성 상승."],
+ssr:["🌈 SSR! 오늘 하루 버프 적용.","🌈 SSR! 기대하지 않은 곳에서 행운 발견."],
+legend:["👑 전설! 원하는 일이 하나쯤은 생각대로 풀릴 가능성 상승.","👑 전설! 오늘은 주인공 버프 발동."]
+};
+
+const rolling=["일반","일반","레어","일반","SSR","일반","레어","전설"];
+let i=0;
+const slot=document.getElementById("slot");
+
+const anim=setInterval(()=>{
+slot.textContent="🎰 "+rolling[i%rolling.length];
+i++;
+},120);
+
+setTimeout(()=>{
+clearInterval(anim);
+
+let r=Math.random();
+let rarity,text;
+
+if(r<0.03){
+ rarity="👑 전설";
+ text=data.legend[Math.floor(Math.random()*data.legend.length)];
+ document.getElementById("card").classList.add("legendary");
+
+ for(let j=0;j<40;j++){
+   const c=document.createElement("div");
+   c.className="confetti";
+   c.textContent=["✨","🎉","🌟","💛"][Math.floor(Math.random()*4)];
+   c.style.left=Math.random()*100+"vw";
+   c.style.animationDelay=(Math.random()*1.5)+"s";
+   document.body.appendChild(c);
+ }
+}else if(r<0.12){
+ rarity="🌈 SSR";
+ text=data.ssr[Math.floor(Math.random()*data.ssr.length)];
+}else if(r<0.35){
+ rarity="⭐ 레어";
+ text=data.rare[Math.floor(Math.random()*data.rare.length)];
+}else{
+ rarity="🙂 일반";
+ text=data.common[Math.floor(Math.random()*data.common.length)];
+}
+
+slot.innerHTML="🎊 결과 공개! 🎊";
+document.getElementById("result").classList.remove("hidden");
+document.getElementById("rarity").textContent=rarity;
+document.getElementById("fortune").textContent=text;
+
+},2200);
+</script>
+</body>
+</html>
